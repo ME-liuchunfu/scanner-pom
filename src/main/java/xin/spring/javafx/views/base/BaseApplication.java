@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import xin.spring.javafx.annotation.Views;
+
 import java.lang.reflect.Field;
 
 /**
@@ -31,19 +33,31 @@ public abstract class BaseApplication extends Application {
      */
     protected Class clazz;
 
-    protected String targetResourcesDir;
+    /**
+     * 窗体标题
+     */
+    protected String frameTitle;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.clazz = this.getClass();
         this.typeName = this.clazz.getTypeName();
         this.clazzPackageFileName = "/".concat(this.typeName.replace(".", "/"));
-        Field[] fields = this.clazz.getFields();
+        if(this.clazz.getAnnotation(Views.class) != null) {
+            Field[] fields = this.clazz.getDeclaredFields();
+            for (Field field : fields) {
+                if (field.getAnnotation(Views.class) != null) {
+                    field.setAccessible(true);
+                    this.frameTitle = field.get(this).toString();
+                    break;
+                }
+            }
+        }
         try {
-            Parent root = FXMLLoader.load(this.clazz.getResource(clazzPackageFileName + ".fxml"));
+            Parent root = FXMLLoader.load(this.clazz.getResource(this.clazzPackageFileName + ".fxml"));
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(this.clazz.getResource(clazzPackageFileName + ".css").toExternalForm());
-            primaryStage.setTitle(this.clazz.getName());
+            scene.getStylesheets().add(this.clazz.getResource(this.clazzPackageFileName + ".css").toExternalForm());
+            primaryStage.setTitle(frameTitle != null ? frameTitle : this.clazz.getName());
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             // 自定义其他显示样式

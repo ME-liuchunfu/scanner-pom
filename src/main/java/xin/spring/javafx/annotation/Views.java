@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
  * @date 2019/12/25
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface Views {
 }

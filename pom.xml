@@ -101,8 +101,7 @@
       <resource>
         <directory>src/main/java</directory>
         <includes>
-          <include>**/*.fxml</include>
-          <include>**/*.css</include>
+          <include>**/*.*</include>
         </includes>
         <filtering>true</filtering>
       </resource>
