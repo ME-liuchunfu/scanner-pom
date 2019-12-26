@@ -45,6 +45,10 @@ public class FileScannerUtil {
         scanner(path, scannerListener);
     }
 
+    public FileScannerUtil(File path, ScannerListener scannerListener){
+        this(path.getAbsolutePath(), scannerListener);
+    }
+
     public List<FileItem> scannerFileInDir(File file, List<FileItem> fileItems){
         if(file.exists() && !file.isHidden()) {
             if (file.isDirectory()) {
@@ -84,14 +88,14 @@ public class FileScannerUtil {
     /**
      *  扫描成功监听
      */
-    interface ScannerListener{
-        void onSuccess(List<FileItem> fileItems);
+    public interface ScannerListener{
+        public void onSuccess(List<FileItem> fileItems);
     }
 
     /**
      *  扫描成功抽象监听
      */
-    abstract static class AbsScannerListener implements ScannerListener{
+    public abstract static class AbsScannerListener implements ScannerListener{
 
         protected String basePath;
 
@@ -118,14 +122,14 @@ public class FileScannerUtil {
          * @param index
          * @param size
          */
-        abstract void onEach(List<FileItem> fileItems, FileItem fileItem, int index, long size);
+        public abstract void onEach(List<FileItem> fileItems, FileItem fileItem, int index, long size);
 
     }
 
     /**
      * 文件实体
      */
-    class FileItem implements Serializable {
+    public class FileItem implements Serializable {
 
         private String fileName;
 

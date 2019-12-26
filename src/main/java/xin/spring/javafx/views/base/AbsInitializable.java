@@ -16,14 +16,14 @@ public abstract class AbsInitializable implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
-        beforeText();
+        beforeDatas();
         initListener();
     }
 
     /**
      * 监听前初始化数据
      */
-    protected abstract void beforeText();
+    protected abstract void beforeDatas();
 
     /**
      * 监听事件

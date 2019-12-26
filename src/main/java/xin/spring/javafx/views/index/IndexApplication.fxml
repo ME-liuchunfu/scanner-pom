@@ -1,9 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="container" prefHeight="646.0" prefWidth="855.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="xin.spring.javafx.views.index.IndexController" />
+<AnchorPane fx:id="container" prefHeight="646.0" prefWidth="855.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="xin.spring.javafx.views.index.IndexController">
+   <children>
+      <GridPane fx:id="right" layoutX="496.0" prefHeight="646.0" prefWidth="359.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="50.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="sqlName" alignment="CENTER" prefHeight="38.0" prefWidth="151.0" text="数据库信息" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <ImageView fx:id="sqlImage" fitHeight="127.0" fitWidth="322.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/sql.jpg" />
+               </image>
+            </ImageView>
+            <Label prefHeight="35.0" prefWidth="79.0" text="数据库类型：" textAlignment="JUSTIFY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="drivers" prefHeight="23.0" prefWidth="205.0" promptText="数据库类别" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Label prefHeight="36.0" prefWidth="77.0" text="数据库名：" textAlignment="JUSTIFY" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="databases" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <TextField fx:id="username" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Label prefHeight="28.0" prefWidth="79.0" text="用户名：" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label prefHeight="32.0" prefWidth="79.0" text="密码：" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="password" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <Button fx:id="saveButton" mnemonicParsing="false" prefHeight="32.0" prefWidth="185.0" text="保存设置" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+         </children>
+      </GridPane>
+      <Pane fx:id="leftTop" prefHeight="646.0" prefWidth="487.0">
+         <children>
+            <Label fx:id="leftTitle" alignment="CENTER" layoutX="9.0" layoutY="13.0" prefHeight="57.0" prefWidth="462.0" text="标题" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <HBox fx:id="hBox" layoutX="10.0" layoutY="81.0" prefHeight="38.0" prefWidth="462.0">
+               <children>
+                  <Button fx:id="selectFileButton" mnemonicParsing="false" text="选择文件夹">
+                     <HBox.margin>
+                        <Insets left="50.0" right="70.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="clearAllButton" mnemonicParsing="false" text="清空列表">
+                     <HBox.margin>
+                        <Insets right="70.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="toDbButton" mnemonicParsing="false" text="全部入库">
+                     <HBox.margin>
+                        <Insets right="50.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <TreeView fx:id="treeView" layoutX="4.0" layoutY="128.0" prefHeight="514.0" prefWidth="480.0" />
+            <ProgressIndicator fx:id="loading" layoutX="184.0" layoutY="288.0" prefHeight="101.0" prefWidth="113.0" progress="0.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
