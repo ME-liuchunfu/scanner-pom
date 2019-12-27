@@ -74,7 +74,7 @@
                </children>
             </HBox>
             <TreeView fx:id="treeView" layoutX="4.0" layoutY="128.0" prefHeight="514.0" prefWidth="480.0" />
-            <ProgressIndicator fx:id="loading" layoutX="184.0" layoutY="288.0" prefHeight="101.0" prefWidth="113.0" progress="0.0" />
+            <ProgressIndicator fx:id="loading" disable="true" layoutX="184.0" layoutY="288.0" opacity="0.0" prefHeight="101.0" prefWidth="113.0" progress="0.0" />
          </children>
       </Pane>
    </children>

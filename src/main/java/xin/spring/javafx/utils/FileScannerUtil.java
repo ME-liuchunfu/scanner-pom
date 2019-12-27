@@ -73,6 +73,19 @@ public class FileScannerUtil {
         }
     }
 
+//    public FileItem treeFileItem(List<FileItem> items){
+//        FileItem fileItem = new FileItem();
+//        if(items != null && items.size() > 0){
+//            for(FileItem item : items){
+//                if(){
+//
+//                }
+//            }
+//        }
+//        return fileItem;
+//    }
+
+
     public static void main(String[] args) {
         new FileScannerUtil("F:\\go语言与区块链精品入门课程视频", new AbsScannerListener(){
             @Override
@@ -129,7 +142,7 @@ public class FileScannerUtil {
     /**
      * 文件实体
      */
-    public class FileItem implements Serializable {
+    public static class FileItem implements Serializable {
 
         private String fileName;
 
@@ -149,7 +162,7 @@ public class FileScannerUtil {
 
         public File getFile(){return this.file;}
 
-        private String getFileName(){return getFile().getName();}
+        public String getFileName(){return getFile().getName();}
 
         public String getFileAbsPath(){return getFile().getAbsolutePath();}
 

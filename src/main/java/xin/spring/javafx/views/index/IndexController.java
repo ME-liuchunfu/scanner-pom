@@ -9,16 +9,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import javafx.util.Callback;
 import xin.spring.javafx.bean.DataBase;
 import xin.spring.javafx.enums.DataBaseVersion;
 import xin.spring.javafx.logs.Slf4jLog;
-import xin.spring.javafx.utils.AlertBoxFactory;
-import xin.spring.javafx.utils.DefaultValueFactory;
-import xin.spring.javafx.utils.FileScannerUtil;
-import xin.spring.javafx.utils.FrameFactory;
+import xin.spring.javafx.utils.*;
 import xin.spring.javafx.views.base.AbsInitializable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,15 +48,7 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
     @FXML private TreeView treeView;
     @FXML private ProgressIndicator loading;
 
-    /**
-     * 最小值
-     */
-    private double minValue = 0.0;
-
-    /**
-     * 刷新UI中， true： 刷新中， false： 不刷新
-     */
-    private boolean isUpdate = false;
+    private File baseFile;
 
     /**
      * 默认数据库配置
@@ -76,7 +67,6 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
      * 初始化默认配置
      */
     private void setDefaultValue() {
-        loading.setVisible(false);
         // 下拉框选中第一项
         drivers.getSelectionModel().selectFirst();
         // 设置各个输入框的值
@@ -110,43 +100,47 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
 
         // 左边按钮监听
         selectFileButton.setOnAction(event -> {
-            File file = FrameFactory.getInstance().chooseFolder((folderChooser) ->{
+            baseFile = FrameFactory.getInstance().chooseFolder((folderChooser) ->{
                 folderChooser.setTitle("请选择相对应的文件夹");
             });
-            log.info("文件夹：{}", file.getAbsolutePath());
-            // 显示加载窗
-//            loading.setProgress(minValue);
-//            loading.setVisible(true);
-//            isUpdate = true;
-//            new Thread(()->{
-//                while (isUpdate){
-//                    minValue+= 0.00001;
-//                    loading.setProgress(minValue);
-//                    //log.info(loading.getProgress()+"");
-//                    if(minValue>=10)break;
-//                }
-//                isUpdate = false;
-//                if(!isUpdate){
-//                    loading.setProgress(10);
-//                }
-//                loading.setVisible(false);
-//                log.info(loading.getProgress()+":大小");
-//            }).start();
+            log.info("文件夹：{}", baseFile.getAbsolutePath());
             // 开启扫描数据
-            new FileScannerUtil(file, (list)->{
-                System.out.println("个数：" + list.size());
+            ThreadUtil.getInstance().thread(new ThreadUtil.ThreadListener<List<FileScannerUtil.FileItem>>() {
+                @Override
+                public List<FileScannerUtil.FileItem> onLoad() {
+                    List<FileScannerUtil.FileItem> result = new ArrayList<>();
+                    new FileScannerUtil(baseFile, (list)->{
+                        System.out.println("个数：" + list.size());
+                        result.addAll(list);
+                    });
+                    return result;
+                }
+            },(items)->{
+                System.out.println("子线程成功:" + items);
+                //isUpdate = false;
+                ThreadUtil.getInstance().runOnUIThread(items, (datas)->{
+                    showTreeView(items);
+                });
             });
-//            new FileScannerUtil(file, new FileScannerUtil.AbsScannerListener(){
-//                @Override
-//                public void onEach(List<FileScannerUtil.FileItem> fileItems, FileScannerUtil.FileItem fileItem, int index, long size) {
-//                    String fileAbsPath = FileScannerUtil.tran2slash(fileItem.getFileAbsPath());
-//                    fileAbsPath = fileAbsPath.replaceAll(this.getBasePath(), "");
-//                    //System.out.println(fileAbsPath + "=====: 个数：" + size);
-//                    //isUpdate = true;
-//                    //minValue = 0.0;
-//                    System.out.println("个数：" + size);
-//                }
-//            });
+
         });
+
+        clearAllButton.setOnAction(event -> {
+            treeView.setRoot(null);
+        });
+
+        toDbButton.setOnAction(event -> {
+            log.info("入库：");
+        });
+    }
+
+    private void showTreeView(List<FileScannerUtil.FileItem> items){
+        TreeItem<String> root = new TreeItem<>(new FileScannerUtil.FileItem(baseFile).getFileName());
+        //root.setExpanded(true);
+        for(FileScannerUtil.FileItem item : items){
+            TreeItem<String> treeItem = new TreeItem<>(item.getFileName());
+            root.getChildren().add(treeItem);
+        }
+        treeView.setRoot(root);
     }
 }
