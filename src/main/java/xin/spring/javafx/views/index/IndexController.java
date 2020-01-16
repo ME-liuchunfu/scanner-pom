@@ -134,11 +134,16 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
         });
 
         clearAllButton.setOnAction(event -> {
+            fileItem.getList().clear();
             treeView.setRoot(null);
         });
 
         toDbButton.setOnAction(event -> {
             log.info("入库：");
+            if(fileItem.getList().isEmpty()){
+                AlertBoxFactory.getInstance().display("提示", "当前数据为空。不能持久化");
+                return;
+            }
             FileRepository repository = ApplicationSession.getInstance().getComponent(FileRepository.class);
             List<FileTable> list = new ArrayList<>();
             transfor(fileItem, list);
