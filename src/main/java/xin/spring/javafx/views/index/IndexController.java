@@ -8,11 +8,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.stage.DirectoryChooser;
-import javafx.util.Callback;
-import xin.spring.javafx.bean.DataBase;
+import xin.spring.javafx.domain.DataBase;
+import xin.spring.javafx.domain.FileTable;
 import xin.spring.javafx.enums.DataBaseVersion;
 import xin.spring.javafx.logs.Slf4jLog;
+import xin.spring.javafx.repositories.FileRepository;
+import xin.spring.javafx.session.ApplicationSession;
 import xin.spring.javafx.utils.*;
 import xin.spring.javafx.views.base.AbsInitializable;
 
@@ -55,8 +56,14 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
      */
     private DataBase dataBase = DefaultValueFactory.getInstance().getDataBaseDefault();
 
+    private List<FileScannerUtil.FileItem> fileItems = new ArrayList<>();
+
+    private FileScannerUtil.FileItem fileItem = null;
+
     @Override
     protected void beforeDatas() {
+        // 先缓存一个默认数据库
+        ApplicationSession.getInstance().put(DataBase.class, dataBase);
         ObservableList<DataBaseVersion> options = FXCollections.observableArrayList(
                 DataBaseVersion.MYSQL, DataBaseVersion.MARIADB);
         drivers.getItems().addAll(options);
@@ -96,6 +103,8 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
             dataBase.setDatabases(databases.getText().trim());
             log.info("更新数据：{}", dataBase);
             AlertBoxFactory.getInstance().display("提示", "更新成功");
+            // 缓存
+            ApplicationSession.getInstance().put(DataBase.class, dataBase);
         });
 
         // 左边按钮监听
@@ -105,21 +114,20 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
             });
             log.info("文件夹：{}", baseFile.getAbsolutePath());
             // 开启扫描数据
-            ThreadUtil.getInstance().thread(new ThreadUtil.ThreadListener<List<FileScannerUtil.FileItem>>() {
+            ThreadUtil.getInstance().thread(new ThreadUtil.ThreadListener<FileScannerUtil.FileItem>() {
                 @Override
-                public List<FileScannerUtil.FileItem> onLoad() {
-                    List<FileScannerUtil.FileItem> result = new ArrayList<>();
-                    new FileScannerUtil(baseFile, (list)->{
-                        System.out.println("个数：" + list.size());
-                        result.addAll(list);
-                    });
-                    return result;
+                public FileScannerUtil.FileItem onLoad() {
+                    new FileScannerUtil(baseFile, (item)->{
+                        log.info("个数：" + item.getList().size());
+                        fileItem = item;
+                    },true);
+                    return fileItem;
                 }
             },(items)->{
-                System.out.println("子线程成功:" + items);
+                log.info("子线程成功:" + items);
                 //isUpdate = false;
                 ThreadUtil.getInstance().runOnUIThread(items, (datas)->{
-                    showTreeView(items);
+                    showTreeViewTree(items);
                 });
             });
 
@@ -131,12 +139,50 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
 
         toDbButton.setOnAction(event -> {
             log.info("入库：");
+            FileRepository repository = ApplicationSession.getInstance().getComponent(FileRepository.class);
+            List<FileTable> list = new ArrayList<>();
+            transfor(fileItem, list);
+            try{
+                repository.saveAll(list);
+                AlertBoxFactory.getInstance().display("提示", "入库成功");
+            }catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+                AlertBoxFactory.getInstance().display("错误提示", "入库失败");
+            }
         });
+    }
+
+    private void transfor(FileScannerUtil.FileItem item, List<FileTable> list){
+        if(!item.getList().isEmpty()){
+            for(int i=0;i<item.getList().size();i++){
+                FileTable fileTable = new FileTable();
+                fileTable.setUrl(item.getList().get(i).getFile().getAbsolutePath().replace(baseFile.getParent(),""));
+                list.add(fileTable);
+                transfor(item.getList().get(i), list);
+            }
+        }
+    }
+
+    private void showTreeViewTree(FileScannerUtil.FileItem item) {
+        TreeItem<String> root = new TreeItem<>(item.getFile().getName());
+        treeViewData(root, item.getList());
+        treeView.setRoot(root);
+    }
+
+    private void treeViewData(TreeItem<String> parentView, List<FileScannerUtil.FileItem> items){
+        if(!items.isEmpty()){
+            parentView.setExpanded(true);
+            for(FileScannerUtil.FileItem i : items){
+                TreeItem<String> treeItem = new TreeItem<>(i.getFile().getName());
+                treeViewData(treeItem, i.getList());
+                parentView.getChildren().add(treeItem);
+            }
+        }
     }
 
     private void showTreeView(List<FileScannerUtil.FileItem> items){
         TreeItem<String> root = new TreeItem<>(new FileScannerUtil.FileItem(baseFile).getFileName());
-        //root.setExpanded(true);
         for(FileScannerUtil.FileItem item : items){
             TreeItem<String> treeItem = new TreeItem<>(item.getFileName());
             root.getChildren().add(treeItem);

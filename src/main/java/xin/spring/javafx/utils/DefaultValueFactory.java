@@ -1,6 +1,6 @@
 package xin.spring.javafx.utils;
 
-import xin.spring.javafx.bean.DataBase;
+import xin.spring.javafx.domain.DataBase;
 import xin.spring.javafx.enums.DataBaseVersion;
 
 /**
