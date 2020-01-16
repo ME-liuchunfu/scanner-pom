@@ -58,7 +58,7 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
 
     private List<FileScannerUtil.FileItem> fileItems = new ArrayList<>();
 
-    private FileScannerUtil.FileItem fileItem = null;
+    private FileScannerUtil.FileItem fileItem = new FileScannerUtil.FileItem();
 
     @Override
     protected void beforeDatas() {
