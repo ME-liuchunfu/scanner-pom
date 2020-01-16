@@ -65,7 +65,7 @@ public class IndexController extends AbsInitializable implements Slf4jLog {
         // 先缓存一个默认数据库
         ApplicationSession.getInstance().put(DataBase.class, dataBase);
         ObservableList<DataBaseVersion> options = FXCollections.observableArrayList(
-                DataBaseVersion.MYSQL, DataBaseVersion.MARIADB);
+                DataBaseVersion.MYSQL, DataBaseVersion.MARIADB, DataBaseVersion.MYSQL5_INNODB, DataBaseVersion.MYSQL_MYISAM);
         drivers.getItems().addAll(options);
         setDefaultValue();
     }
