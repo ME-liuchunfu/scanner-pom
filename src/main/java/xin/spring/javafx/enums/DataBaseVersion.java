@@ -13,7 +13,7 @@ public enum DataBaseVersion {
 
     MYSQL5_INNODB("Mysql5_InnoDB", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.MySQL5InnoDBDialect"),
 
-    MYSQL_MYISAM("Mysql5_InnoDB", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.MySQLMyISAMDialect"),
+    MYSQL_MYISAM("Mysql_MyISam", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.MySQLMyISAMDialect"),
 
     MARIADB("MariaDB", "org.mariadb.jdbc.Driver", "jdbc:maria://localhost:3306/", "org.hibernate.dialect.MariaDBDialect");
 

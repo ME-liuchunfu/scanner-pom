@@ -9,9 +9,13 @@ package xin.spring.javafx.enums;
  */
 public enum DataBaseVersion {
 
-    MYSQL("Mysql", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/"),
+    MYSQL("Mysql", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.MySQL5Dialect"),
 
-    MARIADB("MariaDB", "org.mariadb.jdbc.Driver", "jdbc:maria://localhost:3306/");
+    MYSQL5_INNODB("Mysql5_InnoDB", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.MySQL5InnoDBDialect"),
+
+    MYSQL_MYISAM("Mysql5_InnoDB", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.MySQLMyISAMDialect"),
+
+    MARIADB("MariaDB", "org.mariadb.jdbc.Driver", "jdbc:maria://localhost:3306/", "org.hibernate.dialect.MariaDBDialect");
 
     private String value;
 
@@ -19,10 +23,13 @@ public enum DataBaseVersion {
 
     private String url;
 
-    private DataBaseVersion(String value, String driver, String url){
+    private String dialect;
+
+    private DataBaseVersion(String value, String driver, String url, String dialect){
         this.value = value;
         this.driver = driver;
         this.url = url;
+        this.dialect = dialect;
     }
 
     public String getValue(){return value;}
@@ -30,6 +37,8 @@ public enum DataBaseVersion {
     public String getDriver(){return driver;}
 
     public String getUrl(){return url;}
+
+    public String getDialect(){return dialect;}
 
 
     @Override
