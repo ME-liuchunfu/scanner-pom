@@ -23,7 +23,7 @@
     <mysql.version>8.0.15</mysql.version>
     <mariadb.version>2.5.0</mariadb.version>
     <spring.data.jpa>2.1.5.RELEASE</spring.data.jpa>
-    <hibernate.version>5.3.5.Final</hibernate.version>
+    <hibernate.version>5.3.20.Final</hibernate.version>
     <c3p0.version>0.9.5.2</c3p0.version>
   </properties>
 
